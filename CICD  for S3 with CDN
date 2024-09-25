@@ -1,0 +1,59 @@
+title Multi Environment CI/CD for AWS S3 with CloudFront
+
+// Nodes and groups
+// Web Application [icon: monitor]
+Developer [icon: user]
+
+CI CD [icon: jenkins] {
+  Test Branch [icon: git-branch ]
+  Test Build [icon: aws-codebuild]
+  Stage Branch [icon: git-branch ]
+  Stage Build [icon: aws-codebuild]
+  Prod Branch [icon: git-branch ]
+  Prod Build [icon: aws-codebuild]
+
+  AWS S3 [icon: aws-s3] {
+    Stage Bucket [icon: aws-s3]
+    Prod Bucket [icon: aws-s3]
+    Test Bucket [icon: aws-s3]
+  }
+
+  CDN [icon: aws-cloudfront] {
+    CloudFront Test [icon: aws-cloudfront]
+    CloudFront Stage  [icon: aws-cloudfront]
+    CloudFront Prod [icon: aws-cloudfront]
+  }
+  
+}
+
+
+Monitoring [icon: aws-cloudwatch] {
+  AWS CloudWatch [icon: aws-cloudwatch]
+}
+
+// Connections
+// Web Application > CloudFront Stage 
+
+// CloudFront Stage  > Stage Branch
+// CloudFront Test  > Test Branch
+// CloudFront Prod  > Prod Branch
+
+// Stage Branch > CloudFront Stage
+// Test Branch > CloudFront Test
+// Prod Branch > CloudFront Prod
+
+Developer > Test Branch > Test Build 
+Test Build > Test Bucket: upload to s3
+Test Bucket > CloudFront Test: Invalidation
+CloudFront Test > AWS CloudWatch
+
+Developer > Stage Branch > Stage Build 
+Stage Build > Stage Bucket: upload to s3
+Stage Bucket > CloudFront Stage: Invalidation
+CloudFront Stage > AWS CloudWatch
+
+Developer > Prod Branch > Prod Build 
+Prod Build > Prod Bucket: upload to s3
+Prod Bucket > CloudFront Prod: Invalidation
+CloudFront Prod > AWS CloudWatch
+
