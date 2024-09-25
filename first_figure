@@ -1,0 +1,54 @@
+// Define Groups and other Important Points
+
+DeveloperMachine [icon: user]
+
+CodePipeline [icon: aws-codepipeline] {
+  Source [icon: aws-codecommit]
+  Build [icon: aws-codebuild]
+  Deploy [icon: aws-code-deploy]
+}
+
+EKS [icon: aws-eks] {
+  NodeGroup [icon: aws-ec2] {
+    ApplicationPods [icon: kubernetes-pods]
+    Service [icon: kubernetes-service]
+    Ingress [icon: kubernetes-ingress]
+  }
+}
+
+VPC [icon: aws-vpc] {
+  PublicSubnet [icon: aws-subnet] {
+    ALB [icon: aws-alb]
+    NATGateway [icon: aws-nat-gateway]
+  }
+  PrivateSubnet [icon: aws-subnet] {
+    EKSCluster [icon: aws-eks]
+    RDS [icon: aws-rds]
+    S3 [icon: aws-s3]
+  }
+}
+
+IAM [icon: aws-iam]
+CloudWatch [icon: aws-cloudwatch]
+XRay [icon: aws-x-ray]
+Route53 [icon: aws-route-53]
+ACM [icon: aws-acm]
+
+// Connections among services
+DeveloperMachine > CodePipeline
+CodePipeline > Source
+CodePipeline > Build
+CodePipeline > Deploy
+Deploy > EKSCluster
+
+Route53 > ALB
+ALB > Ingress
+Ingress > Service
+Service > ApplicationPods
+ApplicationPods > RDS
+ApplicationPods > S3
+
+IAM > EKSCluster
+CloudWatch > EKSCluster
+XRay > ApplicationPods
+ACM > ALB
