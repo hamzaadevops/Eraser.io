@@ -1,0 +1,69 @@
+// Title
+title Kubernetes Cluster of Leopard Courier Services
+
+// Nodes and groups
+K8sCluster [icon: kubernetes] {
+  CommonNamespace [icon: k8s-ns] {
+    AdminFrontend [icon: k8s-deploy] {
+      AdminFrontendService [icon: k8s-svc , label: "NodePort Service"]
+    }
+    AdminBackend [icon: k8s-deploy] {
+      AdminBackendService [icon: k8s-svc, label: "NodePort Service"]
+    }
+    AdminRedis [icon: k8s-sts] {
+      AdminRedisService [icon: k8s-svc, label: "ClusterIP Service"]
+    }
+    AdminReporting [icon: k8s-deploy] {
+      AdminReportingService [icon: k8s-svc, label: "NodePort Service"]
+    }
+    AdminCronJob1 [icon: k8s-cronjob]
+    AdminCronJob2 [icon: k8s-cronjob]
+    MerchantFrontend [icon: k8s-deploy] {
+      MerchantFrontendService [icon: k8s-svc, label: "NodePort Service"]
+    }
+    MerchantBackend [icon: k8s-deploy] {
+      MerchantBackendService [icon: k8s-svc, label: "NodePort Service"]
+    }
+    MerchantRedis [icon: k8s-sts] {
+      MerchantRedisService [icon: k8s-svc, label: "ClusterIP Service"]
+    }
+    DarazBackend [icon: k8s-deploy] {
+      DarazBackendService [icon: k8s-svc, label: "NodePort Service"]
+    }
+    ShopifyBackend [icon: k8s-deploy] {
+      ShopifyBackendService [icon: k8s-svc, label: "NodePort Service"]
+    }
+    UAEBackend [icon: k8s-deploy] {
+      UAEBackendService [icon: k8s-svc, label: "NodePort Service"]
+    }
+    Prod-Ingress [icon: k8s-ing] {
+      AdminALB [icon: aws-alb]
+    }
+    Special-Ingress [icon: k8s-ing] {
+      MerchantALB [icon: aws-alb]
+    }
+  }
+}
+
+DNS [icon: azure-dns-zones]
+
+// Connections
+DNS > Prod-Ingress
+DNS > Special-Ingress
+Prod-Ingress > AdminFrontend
+Prod-Ingress > AdminBackend
+Prod-Ingress > AdminReporting
+Prod-Ingress > MerchantFrontend
+Prod-Ingress > MerchantBackend
+Special-Ingress > DarazBackend
+Special-Ingress > ShopifyBackend
+Special-Ingress > UAEBackend
+
+AdminFrontend > AdminRedis
+AdminBackend > AdminRedis
+AdminReporting > AdminRedis
+MerchantFrontend > MerchantRedis
+MerchantBackend > MerchantRedis
+ShopifyBackend > MerchantRedis
+DarazBackend > MerchantRedis
+UAEBackend > MerchantRedis
