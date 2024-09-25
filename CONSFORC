@@ -1,0 +1,51 @@
+// Define Groups and other Important Points
+DeveloperMachine [icon: user]
+
+CodePipeline [icon: aws-codepipeline] {
+  Source [icon: aws-codecommit]
+  Build [icon: aws-codebuild]
+  Deploy [icon: aws-code-deploy]
+}
+
+CloudFront [icon: aws-cloudfront]
+Route53 [icon: aws-route-53]
+APIGateway [icon: aws-api-gateway]
+Lambda [icon: aws-lambda]
+DynamoDB [icon: aws-dynamodb]
+S3 [icon: aws-simple-storage-service]
+SageMaker [icon: aws-sagemaker]
+
+VPCSubnet [icon: aws-vpc] {
+  AIModelTraining [icon: aws-sagemaker] {
+    TrainingData [icon: aws-s3]
+    TrainedModel [icon: aws-s3]
+  }
+
+  Analytics [icon: aws-quicksight]
+}
+
+IAM [icon: aws-iam]
+XRay [icon: aws-x-ray]
+CloudWatch [icon: aws-cloudwatch]
+Cognito [icon: aws-cognito]
+
+// Connections among services
+DeveloperMachine > CodePipeline
+CodePipeline > Source
+CodePipeline > Build
+CodePipeline > Deploy
+Deploy > APIGateway
+
+Route53 > CloudFront
+CloudFront > APIGateway
+APIGateway > Lambda
+Lambda > DynamoDB
+Lambda > S3
+AIModelTraining > Lambda
+Cognito > APIGateway
+Lambda > CloudWatch
+Lambda > X-Ray
+Analytics < DynamoDB
+S3 > TrainedModel
+SageMaker > TrainingData
+SageMaker > TrainedModel
