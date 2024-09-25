@@ -1,0 +1,30 @@
+VPC [icon: aws-vpc] {
+  PublicSubnet [icon: aws-subnet] {
+    ALB [icon: aws-alb]
+    NATGateway [icon: aws-nat-gateway]
+  }
+  PrivateSubnet [icon: aws-subnet] {
+    EKSCluster [icon: aws-eks]
+    RDS [icon: aws-rds]
+    S3 [icon: aws-s3]
+  }
+}
+
+EKSCluster [icon: aws-eks] {
+  NodeGroup [icon: aws-ec2] {
+    ApplicationPods [icon: kubernetes-pods]
+    Service [icon: kubernetes-service]
+    Ingress [icon: kubernetes-ingress]
+  }
+}
+
+IAM [icon: aws-iam]
+CloudWatch [icon: aws-cloudwatch]
+Users [icon: users]
+
+Users > DNS > ALB > Ingress > Service > ApplicationPods 
+ApplicationPods > NATGateway > RDS
+ApplicationPods > VPCEndpoints >S3
+
+IAM > EKSCluster
+CloudWatch > EKSCluster
