@@ -1,17 +1,29 @@
 title Multi Environment CI/CD for AWS S3 with CloudFront
 
 // Nodes and groups
+
+Monitoring [icon: aws-cloudwatch] {
+  AWS CloudWatch [icon: aws-cloudwatch]
+}
 // Web Application [icon: monitor]
 Developer [icon: user]
+Users [icon: users]{
+QA Engineers [icon: users]
+AB Testing [icon: users]
+Endusers [icon: users]
+}
 
-CI CD [icon: jenkins] {
-  Test Branch [icon: git-branch ]
-  Test Build [icon: aws-codebuild]
+CI CD [icon: ] {
+  GitHub [icon: github] {
+  Dev Branch [icon: git-branch ]
   Stage Branch [icon: git-branch ]
-  Stage Build [icon: aws-codebuild]
   Prod Branch [icon: git-branch ]
+  } 
+  Actions [icon: github-actions ]{
+  Test Build [icon: aws-codebuild]
+  Stage Build [icon: aws-codebuild]
   Prod Build [icon: aws-codebuild]
-
+  } 
   AWS S3 [icon: aws-s3] {
     Stage Bucket [icon: aws-s3]
     Prod Bucket [icon: aws-s3]
@@ -27,33 +39,30 @@ CI CD [icon: jenkins] {
 }
 
 
-Monitoring [icon: aws-cloudwatch] {
-  AWS CloudWatch [icon: aws-cloudwatch]
-}
 
 // Connections
 // Web Application > CloudFront Stage 
 
 // CloudFront Stage  > Stage Branch
-// CloudFront Test  > Test Branch
+// CloudFront Test  > Dev Branch
 // CloudFront Prod  > Prod Branch
 
 // Stage Branch > CloudFront Stage
-// Test Branch > CloudFront Test
+// Dev Branch > CloudFront Test
 // Prod Branch > CloudFront Prod
+Developer > Dev Branch, Stage Branch, Prod Branch
 
-Developer > Test Branch > Test Build 
-Test Build > Test Bucket: upload to s3
-Test Bucket > CloudFront Test: Invalidation
-CloudFront Test > AWS CloudWatch
+Dev Branch > Test Build > Test Bucket
+Test Bucket > CloudFront Test
+CloudFront Test < QA Engineers
 
-Developer > Stage Branch > Stage Build 
-Stage Build > Stage Bucket: upload to s3
-Stage Bucket > CloudFront Stage: Invalidation
-CloudFront Stage > AWS CloudWatch
+Stage Branch > Stage Build 
+Stage Build > Stage Bucket
+Stage Bucket > CloudFront Stage
+CloudFront Stage < AB Testing
 
-Developer > Prod Branch > Prod Build 
-Prod Build > Prod Bucket: upload to s3
-Prod Bucket > CloudFront Prod: Invalidation
-CloudFront Prod > AWS CloudWatch
+Prod Branch > Prod Build 
+Prod Build > Prod Bucket
+Prod Bucket > CloudFront Prod
+CloudFront Prod < Endusers
 
