@@ -1,0 +1,107 @@
+direction right
+// Define groups and nodes
+
+  Main Server {
+    Server [icon: aws-ec2]
+    Data [icon: aws-rds]
+  }
+
+  Queue [icon: aws-auto-scaling]
+
+  Compute Nodes [color: red] {
+    Worker1 [icon: aws-ec2]
+    Worker2 [icon: aws-ec2]
+    Worker3 [icon: aws-ec2]
+  }
+VPC  [icon: aws-vpc] {
+  Public Subnet 1 [icon:aws-subnet-public]
+  Public Subnet 2 [icon:aws-subnet-public]
+  Public Subnet 3 [icon:aws-subnet-public]
+  Private Subnet 1 [icon:aws-subnet-private]
+  Private Subnet 2 [icon:aws-subnet-private]
+  Private Subnet 3 [icon:aws-subnet-private]
+  NAT Gateway 1 [icon:aws-nat-gateway]
+  NAT Gateway 2 [icon:aws-nat-gateway]
+  NAT Gateway 3 [icon:aws-nat-gateway]
+  Route Tables [icon:aws-route-table]
+}
+EKS Control Plane  [icon: aws-eks] {
+  API Server 1 [icon:aws-eks]
+  API Server 2 [icon:aws-eks]
+  API Server 3 [icon:aws-eks]
+  etcd 1 [icon:aws-database]
+  etcd 2 [icon:aws-database]
+  etcd 3 [icon:aws-database]
+}
+Worker Node Group  [icon: aws-ec2] {
+  Worker Node 1 [icon:aws-ec2]
+  Worker Node 2 [icon:aws-ec2]
+  Worker Node 3 [icon:aws-ec2]
+  Auto Scaling Group [icon:aws-auto-scaling]
+}
+Security & IAM  [icon: aws-iam] {
+  OIDC Provider [icon:aws-iam]
+  IRSA Role Load Balancer [icon:aws-iam]
+  IRSA Role Autoscaler [icon:aws-iam]
+  IRSA Role Metrics [icon:aws-iam]
+  IRSA Role EBS [icon:aws-iam]
+}
+Add-Ons  [icon: aws-eks-add-ons] {
+  AWS Load Balancer Controller [icon:aws-elastic-load-balancing]
+  Cluster Autoscaler [icon:aws-auto-scaling]
+  Metrics Server [icon:aws-cloudwatch]
+  EBS CSI Driver [icon:aws-ebs]
+}
+CI/CD & Observability  [icon: github] {
+  GitHub Actions [icon:github]
+  CloudWatch Container Insights [icon:aws-cloudwatch]
+  AWS Budget Alarms [icon:aws-budgets]
+}
+
+
+// Define connections
+Queue > Worker1, Worker2, Worker3
+VPC > Public Subnet 1
+VPC > Public Subnet 2
+VPC > Public Subnet 3
+VPC > Private Subnet 1
+VPC > Private Subnet 2
+VPC > Private Subnet 3
+Public Subnet 1 > NAT Gateway 1
+Public Subnet 2 > NAT Gateway 2
+Public Subnet 3 > NAT Gateway 3
+NAT Gateway 1 > Private Subnet 1: outbound internet
+NAT Gateway 2 > Private Subnet 2: outbound internet
+NAT Gateway 3 > Private Subnet 3: outbound internet
+VPC > Route Tables
+EKS Control Plane > API Server 1
+EKS Control Plane > API Server 2
+EKS Control Plane > API Server 3
+EKS Control Plane > etcd 1
+EKS Control Plane > etcd 2
+EKS Control Plane > etcd 3
+API Server 1 > Private Subnet 1
+API Server 2 > Private Subnet 2
+API Server 3 > Private Subnet 3
+Private Subnet 1 > Worker Node 1
+Private Subnet 2 > Worker Node 2
+Private Subnet 3 > Worker Node 3
+Worker Node 1 > Auto Scaling Group
+Worker Node 2 > Auto Scaling Group
+Worker Node 3 > Auto Scaling Group
+OIDC Provider > IRSA Role Load Balancer
+OIDC Provider > IRSA Role Autoscaler
+OIDC Provider > IRSA Role Metrics
+OIDC Provider > IRSA Role EBS
+IRSA Role Load Balancer > AWS Load Balancer Controller
+IRSA Role Autoscaler > Cluster Autoscaler
+IRSA Role Metrics > Metrics Server
+IRSA Role EBS > EBS CSI Driver
+AWS Load Balancer Controller > Worker Node 1
+Cluster Autoscaler > Auto Scaling Group
+Metrics Server > Worker Node 1
+EBS CSI Driver > Worker Node 1
+GitHub Actions > EKS Control Plane: deploy manifests
+CloudWatch Container Insights > EKS Control Plane: collect metrics
+CloudWatch Container Insights > Worker Node 1: collect metrics
+AWS Budget Alarms > EKS Control Plane: budget notifications
