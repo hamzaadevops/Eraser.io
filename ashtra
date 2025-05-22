@@ -1,0 +1,95 @@
+title "Ashtra – AKS-based AI Microservices Platform Reference Architecture"
+
+// ─── CI/CD Zone ───────────────────────────────────────────────
+CI_CD [label: "CI/CD Pipeline", color: gray, icon: githubactions] {
+  GH [icon: githubactions, label: "GitHub Actions"]
+  ACR [icon: azure-container-registry, label: "Azure Container Registry"]
+}
+GH --> ACR : "Build ▶ Test ▶ Push image"
+
+// ─── Front-End Zone ──────────────────────────────────────────
+FrontEnd [label: "Front-End Zone", color: lightblue, icon: nextdotjs] {
+  WEB1 [icon: azure-static-web-apps, label: "Next.js App"]
+  WEB2 [icon: azure-app-service,   label: "Next.js App"]
+  FD   [icon: azure-front-door,    label: "Azure Front Door"]
+}
+WEB1 --> FD
+WEB2 --> FD
+
+// ─── Security & Networking Overlay ───────────────────────────
+Security [label: "Security & Networking", color: orange, icon: azure-active-directory] {
+  AD      [icon: azure-active-directory, label: "Azure AD / Managed Identity"]
+  KV      [icon: azure-key-vault,         label: "Key Vault"]
+}
+
+// ─── Virtual Network (VNet) ─────────────────────────────────
+VNet [label: "Virtual Network (VNet)", icon: azure-virtual-network] {
+  PublicDMZ [label: "Public DMZ Subnet", icon: azure-subnet] {
+    LB   [icon: azure-load-balancer, label: "Standard Load Balancer"]
+    PIP  [icon: azure-public-ip,     label: "Public IP"]
+    NSG_DMZ [icon: azure-nsg]
+  }
+  PrivateSubnet [label: "Private Subnet", icon: azure-subnet] {
+    NSG_PRIV [icon: azure-private-endpoints]
+    PE [icon: azure-peerings]
+  }
+}
+
+// Front-end ingress
+FD --> PIP
+PIP --> LB
+LB  --> AKS
+
+// ─── Compute Zone ────────────────────────────────────────────
+Compute [label: "Compute Zone", color: lightblue, icon: azure-kubernetes-service] {
+  AKS     [icon: azure-kubernetes-service, label: "AKS (multi-pool)"]
+  SVC1    [icon: azure-container-instances,  label: "NestJS Pod 1"]
+  SVC2    [icon: azure-container-instances,  label: "NestJS Pod 2"]
+  AI_POD  [icon: azure-container-instances,  label: "ai-service Pod"]
+}
+AKS --> SVC1
+AKS --> SVC2
+AKS --> AI_POD
+
+// ─── Data Zone ───────────────────────────────────────────────
+DataZone [label: "Data Zone", color: lightgreen, icon: azure-database-mysql] {
+  MySQL  [icon: azure-database-mysql, label: "Azure Database for MySQL (B1ms)"]
+  Redis  [icon: azure-cache-redis,   label: "Azure Cache for Redis (C0)"]
+  Blob   [icon: azure-blob-storage,  label: "Blob Storage"]
+  Disks  [icon: azure-managed-disk,  label: "Managed Disks"]
+}
+AKS --> MySQL
+AKS --> Redis
+AKS --> Blob
+AKS --> Disks
+
+// ─── Monitoring & ETL ────────────────────────────────────────
+Monitoring [label: "Monitoring", color: wheat, icon: azure-monitor] {
+  LA [icon: azure-log-analytics, label: "Log Analytics Workspace"]
+  G  [icon: grafana,            label: "Grafana"]
+}
+AKS --> LA
+LA  --> G
+
+DataFactory [label: "Data Factory", color: wheat, icon: azure-data-factory] {
+  ADF [icon: azure-data-factory, label: "Azure Data Factory"]
+}
+ADF --> DataZone : "ETL / data ingestion"
+
+// ─── AI Zone ────────────────────────────────────────────────
+AIZone [label: "AI Zone", color: plum, icon: azure-openai] {
+  OAI  [icon: azure-openai,           label: "OpenAI (GPT-4 mini)"]
+  CS   [icon: azure-cognitive-search, label: "Cognitive Search (S1)"]
+  STT  [icon: azure-cognitive-services,label: "Speech-to-Text"]
+  TTS  [icon: azure-cognitive-services,label: "Text-to-Speech"]
+}
+AI_POD --> OAI : "secure via Managed Identity & Key Vault"
+AI_POD --> CS
+AI_POD --> STT
+AI_POD --> TTS
+
+// ─── Security Bindings ───────────────────────────────────────
+AKS    --> AD : "Managed Identity"
+AI_POD --> KV : "Secrets/Keys"
+AKS    --> KV : "Secrets/Keys"
+
