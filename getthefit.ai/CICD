@@ -1,0 +1,34 @@
+title: CICD Infra
+Infra [icon: aws-infrastructure-composer]{
+  CICD [icon: gitlab]{
+    DEV [icon: user]
+    gitlab-cicd [icon: gitlab] {
+      Build Artifact [icon: aws-codebuild]
+      Artifact S3 [icon: aws-s3]
+    }
+    CodeDeploy [icon: aws-codedeploy] {
+      Prepare Revision [icon: file-archive]          // Pull artifact from S3
+      Create Green [icon: aws-auto-scaling-group]
+      ApplicationStart [icon: play]
+      ValidateService [icon: check]
+      }
+    Compute [icon: aws-compute]{
+      AutoScalingGroup [icon: aws-auto-scaling-group]
+      Blue V1 [icon: aws-ec2]
+      Green V2 [icon: aws-ec2]
+    }
+  IAM Policies [icon: aws-iam]
+  }
+  ALB [icon: aws-application-load-balancer] 
+  Users [icon: users]
+  QA Team [icon: person]
+}
+
+DEV > Build Artifact > Artifact S3 > Prepare Revision > Create Green > ApplicationStart > ValidateService > AutoScalingGroup
+AutoScalingGroup >  Green V2
+CodeDeploy < IAM Policies
+gitlab-cicd < IAM Policies
+Blue V1 < ALB : OLD Version : [color: blue, colorMode: outline]
+ALB < Users : [color: blue, colorMode: outline]
+Green V2 < ALB : New Version : [color: green, colorMode: outline]
+ALB < QA Team : [color: green, colorMode: outline]
