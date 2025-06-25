@@ -1,0 +1,37 @@
+title: OpenSearch Architechture
+Requests Flow [icon: flow] {
+  EC2Group [icon: aws-ec2, label: "EC2 Target Group"]
+  VpcEndpoint [icon: aws-vpc-endpoint, label: "VPC Interface Endpoint"]
+  OpenSearchSG [icon: aws-security-group, label: "OpenSearch SG"]
+}
+IAMPolicy [icon: aws-iam, label: "IAM Policy\n(Snapshot + Access Control)"]
+
+OpenSearchCluster [icon: aws-opensearch-service, label: "Amazon OpenSearch"] {
+  MasterNodes [icon: aws-opensearch-service, label: "Master Nodes)"]
+  AutoScalingGroup[icon: aws-auto-scaling] {
+      DataNodes [icon: aws-opensearch-service, label: "Data Nodes"]
+      IngestNodes [icon: aws-opensearch-service, label: "IngestNodes\n(Optional)"]
+  }
+}
+
+AWS S3 [icon: s3]{
+  SnapshotS3 [icon: aws-s3, label: "Snapshot S3\n(Daily Backup, 30 days)"]
+  LogS3 [icon: aws-s3, label: "Log S3\n(Service Logs)"]
+}
+
+// Traffic Flow
+EC2Group > VpcEndpoint: Requests
+VpcEndpoint > OpenSearchSG: Check \nRules
+OpenSearchSG > MasterNodes
+OpenSearchSG > DataNodes
+OpenSearchSG > IngestNodes
+
+// Logs & Monitoring
+MasterNodes --> LogS3: "Service logs"
+DataNodes --> LogS3
+IngestNodes --> LogS3
+
+// Snapshots
+MasterNodes > SnapshotS3: "Daily snapshot"
+IAMPolicy > SnapshotS3: "Scoped S3 access"
+IAMPolicy > OpenSearchCluster: "Least privilege access"
