@@ -1,0 +1,24 @@
+title: ML-EC2-S3
+direction right
+
+ML Flow []{
+ML EC2 [icon: aws-ec2]
+IAM Role [icon: aws-iam]
+CloudWatch [icon: aws-logs]
+
+AWS S3 [icon: aws-s3]{
+  Model S3 Bucket [icon: aws-simple-storage-service]
+  KMS Encryption [icon: aws-kms]  
+  Model Versioning [icon: layers]
+  Lifecycle Policy [icon: recycle]
+  Model Glacier Archive [icon: aws-glacier]
+}
+}
+
+ML EC2 > IAM Role: Assume role with limited S3 access
+IAM Role > Model S3 Bucket: Read-only (GetObject)
+Model S3 Bucket > ML EC2: Pull latest model artifact
+Model S3 Bucket > Model Versioning: Maintain historical versions
+Model S3 Bucket > KMS Encryption: Encrypted at rest
+Model S3 Bucket --  Lifecycle Policy -- Model Glacier Archive
+ML EC2 -- CloudWatch : Log Inference Results
