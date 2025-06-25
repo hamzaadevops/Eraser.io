@@ -1,0 +1,27 @@
+title: ETL Processor Flow
+direction right
+
+Scraping Partner [icon: file-csv]
+Google Drive [icon: gcp-drive]
+ETL Processor  [icon: aws-compute]
+AWS Storage [icon: storage]{
+Images S3 Bucket [icon: aws-simple-storage-service]
+S3 Lifecycle Policy [icon: recycle]
+Glacier Archive [icon: aws-glacier]
+KMS Encryption [icon: aws-kms]
+}
+Metadata Indexer [icon: gears]
+OpenSearch Cluster [icon: aws-opensearch]
+CloudWatch Logs [icon: aws-cloudwatch]
+
+Scraping Partner > Google Drive :Upload csv
+Google Drive > ETL Processor :Parse Details
+ETL Processor  > Images S3 Bucket:Images to S3 
+Images S3 Bucket <> KMS Encryption <> Glacier Archive
+Images S3 Bucket -- S3 Lifecycle Policy 
+S3 Lifecycle Policy -- Glacier Archive 
+
+ETL Processor > Metadata Indexer : Enrich & clean JSON metadata
+Metadata Indexer > OpenSearch Cluster: Index product info via HTTPS
+OpenSearch Cluster > CloudWatch Logs: Log index stats and slow queries
+
